@@ -12,7 +12,19 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Use your own apiKey!
-    [PHGPostHog setupWithConfiguration:[PHGPostHogConfiguration configurationWithApiKey:@"St5WbSrxW5bzxn2NGwPDVzS9PBPYctOl" host:@"https://app.posthog.com"]];
+    [PHGPostHog setupWithConfiguration:[PHGPostHogConfiguration
+                                        configurationWithApiKey:@"St5WbSrxW5bzxn2NGwPDVzS9PBPYctOl"
+                                        host:@"https://app.posthog.com"
+                                        trackingBlacklist:@[
+          @"$network_carrier",
+          @"$network_bluetooth",
+          @"$screen_density",
+          @"$screen_width",
+          @"$screen_height",
+          @"$device_model",
+          @"$network_wifi",
+          @"$lib_version",
+          @"$locale"]]];
     [[PHGPostHog sharedPostHog] capture:@"Manual Example Launched"];
     [[PHGPostHog sharedPostHog] flush];
 

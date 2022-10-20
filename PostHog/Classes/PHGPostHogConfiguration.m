@@ -29,19 +29,25 @@
 
 + (instancetype)configurationWithApiKey:(NSString *)apiKey
 {
-    return [[PHGPostHogConfiguration alloc] initWithApiKey:apiKey host:@"https://app.posthog.com"];
+    return [[PHGPostHogConfiguration alloc] initWithApiKey:apiKey host:@"https://app.posthog.com" trackingBlacklist: NULL];
 }
 
 + (instancetype)configurationWithApiKey:(NSString *)apiKey host:(NSString *)host
 {
-    return [[PHGPostHogConfiguration alloc] initWithApiKey:apiKey host:host];
+    return [[PHGPostHogConfiguration alloc] initWithApiKey:apiKey host:host trackingBlacklist: NULL];
 }
 
-- (instancetype)initWithApiKey:(NSString *)apiKey host:(NSString *)host
++ (_Nonnull instancetype)configurationWithApiKey:(NSString *_Nonnull)apiKey host:(NSString *_Nonnull)host trackingBlacklist:(NSArray<NSString*> *_Nonnull)trackingBlacklist
+{
+    return [[PHGPostHogConfiguration alloc] initWithApiKey:apiKey host:host trackingBlacklist:trackingBlacklist];
+}
+
+- (instancetype)initWithApiKey:(NSString *)apiKey host:(NSString *)host trackingBlacklist:(NSArray<NSString*> *)trackingBlacklist
 {
     if (self = [self init]) {
         self.apiKey = apiKey;
         self.host = [NSURL URLWithString:host];
+        self.trackingBlacklist = trackingBlacklist;
     }
     return self;
 }

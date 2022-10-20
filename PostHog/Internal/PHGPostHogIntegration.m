@@ -63,7 +63,6 @@ static NSString *GetDeviceModel()
 @property (nonatomic, strong) PHGHTTPClient *httpClient;
 @property (nonatomic, strong) id<PHGStorage> fileStorage;
 @property (nonatomic, strong) id<PHGStorage> userDefaultsStorage;
-@property (nonatomic, strong) NSArray *trackingBlacklist;
 
 @end
 
@@ -86,11 +85,6 @@ static NSString *GetDeviceModel()
         self.serialQueue = phg_dispatch_queue_create_specific("com.posthog", DISPATCH_QUEUE_SERIAL);
         self.backgroundTaskQueue = phg_dispatch_queue_create_specific("com.posthog.backgroundTask", DISPATCH_QUEUE_SERIAL);
         self.flushTaskID = UIBackgroundTaskInvalid;
-
-        NSString *path = [[NSBundle mainBundle] pathForResource: @"Info" ofType: @"plist"];
-        NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: path];
-
-        self.trackingBlacklist = [dict objectForKey: @"com.posthog.posthog.TRACK_BLACKLIST"];
 
         [self dispatchBackground:^{
             // Check for previous queue data in NSUserDefaults and remove if present.
@@ -444,10 +438,10 @@ static CTTelephonyNetworkInfo *_telephonyNetworkInfo;
         [properties addEntriesFromDictionary:staticContext];
         [properties addEntriesFromDictionary:liveContext];
 
-        if (self.trackingBlacklist == nil || self.trackingBlacklist.count == 0) {
+        if (self.posthog.configuration.trackingBlacklist == nil || self.posthog.configuration.trackingBlacklist.count == 0) {
             [payload setValue:[properties copy] forKey:@"properties"];
         } else {
-            NSPredicate *blacklistPredicate = [NSPredicate predicateWithFormat:@"NOT(self IN %@)", self.trackingBlacklist];
+            NSPredicate *blacklistPredicate = [NSPredicate predicateWithFormat:@"NOT(self IN %@)", self.posthog.configuration.trackingBlacklist];
             NSDictionary *filteredProperties = [properties dictionaryWithValuesForKeys:[properties.allKeys filteredArrayUsingPredicate:blacklistPredicate]];
 
             [payload setValue:[filteredProperties copy] forKey:@"properties"];

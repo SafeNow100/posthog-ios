@@ -37,6 +37,14 @@ typedef NSMutableURLRequest *_Nonnull (^PHGRequestFactory)(NSURL *_Nonnull);
 + (_Nonnull instancetype)configurationWithApiKey:(NSString *_Nonnull)apiKey host:(NSString *_Nonnull)host;
 
 /**
+ * Creates and returns a configuration with default settings and the given API key.
+ *
+ * @param apiKey Your team's API key.
+ * @param host Your API host
+ */
++ (_Nonnull instancetype)configurationWithApiKey:(NSString *_Nonnull)apiKey host:(NSString *_Nonnull)host trackingBlacklist:(NSArray<NSString*> *_Nonnull)trackingBlacklist;
+
+/**
  * Your team's API key.
  *
  * @see +configurationWithApiKey:
@@ -147,6 +155,11 @@ typedef NSMutableURLRequest *_Nonnull (^PHGRequestFactory)(NSURL *_Nonnull);
  * Leave this nil for iOS extensions, otherwise set to UIApplication.sharedApplication.
  */
 @property (nonatomic, strong, nullable) id<PHGApplicationProtocol> application;
+
+/**
+ * Blacklist of property names to not send.
+ */
+@property (nonatomic, strong, nullable) NSArray<NSString*>* trackingBlacklist;
 
 /**
  * A dictionary of filters to redact payloads before they are sent.
